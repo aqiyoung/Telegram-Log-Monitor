@@ -67,17 +67,24 @@ def main():
         logger = setup_logging(config)
         logger.info('Telegram Log Monitor 启动')
         
-        # 初始化 Telegram Bot
-        telegram_bot = TelegramBot(config)
+        # 根据配置选择消息推送服务
+        notification_service = config.notification.service
         
-        # 初始化收集器管理器（传入 Telegram Bot 实例用于实时推送）
-        collector_manager = CollectorManager(config, telegram_bot)
+        if notification_service == "feishu":
+            from telegram.feishu_bot import FeishuBot
+            notification_bot = FeishuBot(config)
+        else:
+            from telegram.telegram_bot import TelegramBot
+            notification_bot = TelegramBot(config)
+        
+        # 初始化收集器管理器（传入消息推送实例用于实时推送）
+        collector_manager = CollectorManager(config, notification_bot)
         
         # 初始化处理器管理器
         processor_manager = ProcessorManager(config)
         
         # 初始化调度器
-        scheduler = Scheduler(config, collector_manager, processor_manager, telegram_bot, logger)
+        scheduler = Scheduler(config, collector_manager, processor_manager, notification_bot, logger)
         
         # 启动调度器
         scheduler.start()

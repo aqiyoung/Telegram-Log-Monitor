@@ -20,7 +20,18 @@
 
 ## 安装步骤
 
-### 1. 准备Telegram Bot
+### 1. 准备消息推送服务
+
+#### 选项A: 使用飞书机器人（推荐，国内网络友好）
+
+1. 登录飞书网页版: https://www.feishu.cn
+2. 进入「工作台」-> 「机器人」
+3. 点击「创建机器人」，选择「自定义机器人」
+4. 填写机器人名称（如"NAS监控机器人"），选择添加到的群组
+5. 记录生成的「Webhook地址」
+6. 点击「创建」完成机器人创建
+
+#### 选项B: 使用Telegram Bot
 
 1. 在Telegram中搜索 `@BotFather` 并开始对话
 2. 发送 `/newbot` 命令创建新机器人
@@ -51,7 +62,47 @@ chmod +x install.sh
 
 编辑配置文件 `/opt/telegram-log-monitor/config/config.yaml`，设置以下参数：
 
+#### 选项A: 使用飞书机器人
+
 ```yaml
+# 消息推送配置
+notification:
+  service: "feishu"  # 使用飞书机器人
+
+# 飞书配置
+feishu:
+  webhook_url: "YOUR_FEISHU_WEBHOOK_URL"  # 替换为实际的飞书机器人 Webhook URL
+
+# 收集器配置（可根据需要调整）
+collectors:
+  access_log:
+    enabled: true
+    collect_interval: 3600  # 收集间隔（秒）
+  alert_log:
+    enabled: true
+    collect_interval: 1800  # 收集间隔（秒）
+  disk_info:
+    enabled: true
+    collect_interval: 3600  # 收集间隔（秒）
+  system_metrics:
+    enabled: true
+    collect_interval: 600   # 收集间隔（秒）
+
+# 告警阈值配置（可根据需要调整）
+thresholds:
+  cpu_usage: 80        # CPU 使用率阈值（%）
+  memory_usage: 85     # 内存使用率阈值（%）
+  disk_usage: 90       # 磁盘使用率阈值（%）
+  disk_temperature: 55  # 磁盘温度阈值（°C）
+```
+
+#### 选项B: 使用Telegram Bot
+
+```yaml
+# 消息推送配置
+notification:
+  service: "telegram"  # 使用Telegram机器人
+
 # Telegram 配置
 telegram:
   bot_token: "YOUR_BOT_TOKEN"  # 替换为实际的 Bot Token
