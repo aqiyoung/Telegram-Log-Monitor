@@ -1,0 +1,25 @@
+[Unit]
+Description=Telegram Log Monitor
+After=network.target
+
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/bin/python3 /opt/telegram-log-monitor/main.py
+WorkingDirectory=/opt/telegram-log-monitor
+Restart=always
+RestartSec=10
+Environment="PYTHONUNBUFFERED=1"
+
+# 资源限制
+LimitNOFILE=4096
+LimitNPROC=512
+MemoryLimit=256M
+
+# 日志配置
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=telegram-log-monitor
+
+[Install]
+WantedBy=multi-user.target
