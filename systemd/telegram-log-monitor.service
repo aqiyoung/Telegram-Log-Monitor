@@ -5,7 +5,7 @@ After=network.target
 [Service]
 Type=simple
 User=root
-ExecStart=/usr/bin/python3 /opt/telegram-log-monitor/main.py
+ExecStart=/opt/telegram-log-monitor/venv/bin/python /opt/telegram-log-monitor/main.py
 WorkingDirectory=/opt/telegram-log-monitor
 Restart=always
 RestartSec=10
